@@ -14,6 +14,7 @@ A Python script that parses an Excel spreadsheet with multiple tabs containing d
 - **Heatmap**: Intensity-based visualization
 - **Marker Clustering**: Automatically groups nearby markers
 - **Multiple Map Layers**: Switch between different map styles
+- **Custom Map Center**: Set the starting center and zoom level from a `settings` sheet
 
 ## Installation
 
@@ -132,6 +133,24 @@ latitude | longitude  | intensity
 40.6900  | -74.0200   | 0.5
 ```
 
+### 6. settings (Map Center and Zoom)
+
+Optional. Controls where the map is centered and how far it is zoomed in when it first opens. Only the first row is used.
+
+| Column | Type | Required | Description |
+|--------|------|----------|-------------|
+| center_lat | float | No | Starting center latitude |
+| center_lon | float | No | Starting center longitude |
+| zoom_start | int | No | Starting zoom level (default: 10; about 4 shows the whole US) |
+
+If the sheet or the center values are missing, the map is centered automatically based on your data.
+
+**Example (CMU Miami):**
+```
+center_lat | center_lon | zoom_start
+25.7967    | -80.2447   | 12
+```
+
 ## Available Icon Types
 
 Common Folium/Font Awesome icons:
@@ -179,7 +198,7 @@ The script generates an interactive HTML map with:
 ## Notes
 
 - Not all sheets are required - include only the types you need
-- The map will auto-center based on your data
+- The map will auto-center based on your data, unless a `settings` sheet is provided
 - Marker clustering is enabled by default for better performance
 - All coordinate pairs should be in [latitude, longitude] format
 - For polygons, ensure the first and last coordinate pairs are identical to close the shape

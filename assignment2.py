@@ -11,6 +11,7 @@ Expected Excel tab structure:
 - 'polygons': Areas/boundaries (name, coordinates as list of [lat,lon] pairs, color, fill_color)
 - 'heatmap': Heatmap data (latitude, longitude, intensity)
 - 'circles': Circular markers (latitude, longitude, radius, name, color)
+- 'settings': Map center and zoom (center_lat, center_lon, zoom_start)
 """
 
 import pandas as pd
@@ -183,6 +184,17 @@ def create_map_from_excel(excel_file, output_file='map.html',
     df_heatmap = excel_data.get('heatmap')
     df_circles = excel_data.get('circles')
     df_lines = excel_data.get('lines')
+    df_settings = excel_data.get('settings')
+
+    # Use map center and zoom from the settings tab if provided
+    if df_settings is not None and not df_settings.empty:
+        settings = df_settings.iloc[0]
+        if center_lat is None and pd.notna(settings.get('center_lat')):
+            center_lat = settings['center_lat']
+        if center_lon is None and pd.notna(settings.get('center_lon')):
+            center_lon = settings['center_lon']
+        if pd.notna(settings.get('zoom_start')):
+            zoom_start = int(settings['zoom_start'])
 
     # Calculate map center if not provided
     if center_lat is None or center_lon is None:
@@ -251,6 +263,7 @@ if __name__ == "__main__":
         print("  polygons: name, coordinates, color, fill_color, fill_opacity, weight")
         print("  heatmap: latitude, longitude, intensity")
         print("  circles: latitude, longitude, radius, name, description, color, fill_color")
+        print("  settings: center_lat, center_lon, zoom_start")
         sys.exit(1)
 
     excel_file = sys.argv[1]
